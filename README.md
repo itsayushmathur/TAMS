@@ -17,6 +17,7 @@ The Talent Allocation Management System is a web application developed using Rea
 ## Features
 
 - User Authentication: Register, login, and manage user accounts.
+  ID: admin@tams.com  Pass: @12Tams
 - Dashboard: View an overview of talent allocation statistics and important updates.
 - Project Management: Create, update, and delete projects. Assign and manage talent resources for each project.
 - Resource Management: Add and manage talent resources, including their skills, availability, and allocation status.
