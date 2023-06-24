@@ -1,0 +1,10 @@
+.projID{
+    margin: 15px;
+    width: max-content;
+    border-bottom: 4px solid #2570b0;
+    padding-bottom: 5px;
+    color: #2570b0;
+}
+.tablemargin{
+    margin: 10px;
+}

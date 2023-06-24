@@ -1,0 +1,24 @@
+#sidenav{
+    background-color: #2570b0;
+    width: 300px;
+    height: 100%;
+    color: #B0E0FB;
+    justify-content: flex-start;
+    padding: 40px 15px;
+
+    
+}
+
+.navlink{
+    padding: 10px 20px;
+    width: 100%;
+    margin: 6px 0px;
+    text-align: center;
+    border-radius: 12px;
+    background: #257EB0;
+    
+}
+.active{
+    background-color: #B0E0FB;
+    color: #257EB0;
+}

@@ -1,0 +1,10 @@
+.App{
+    height: 100vh;
+}
+.App .main{
+    width: 100%;
+    justify-content: space-between;
+    /* align-items: baseline; */
+    flex: 1;
+    overflow: hidden;
+}

@@ -1,0 +1,90 @@
+
+.allotable{
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+    font-size: small;
+    table-layout: fixed;
+    border-radius: 8px;
+    
+  }
+  .allotable th,
+  .allotable td {
+    padding: 14px;
+    background-color: #A2D8F6;
+    border-bottom: 2px solid white;
+    word-wrap: break-word;
+    /* border-radius: 2px; */
+    
+  }
+  .allotable tbody{
+    color: #2570b0;
+  }
+  
+  
+  .allotable th {
+    background-color: #2570b0;
+    color: white;
+    font-weight: lighter;
+  }
+  
+  .allotable input[type="text"],
+  .allotable input[type="date"] {
+    width: 100%;
+    padding: 6px;
+    /* border: none; */
+  }
+  .allotable th:first-child,
+.allotable td:first-child {
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+}
+
+.allotable th:last-child,
+.allotable td:last-child {
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+.allotable tbody tr:hover{
+  background-color: red;
+}
+
+  .btn{
+    font-size: small;
+    margin-left: 2px;
+  }
+  
+  .btnicon{
+    width: 100%;
+    color: #2570b0;
+    text-align: center;
+    
+
+  }
+  .btnicon:hover{
+    cursor: pointer;
+    color: rgb(255, 59, 59);
+    /* border-radius: 50px; */
+    /* background-color: #2570b0; */
+  }
+  .allotable tbody tr:hover{
+    /* letter-spacing: 1.5px; */
+    font-weight: bolder;
+    cursor: pointer;
+  }
+
+  .project-details {
+    color: #A2D8F6;
+    /* font-size: small; */
+    /* font-weight: bold; */
+    letter-spacing: 1.5px;
+    background-color: #2570b0;
+    padding: 20px;
+    border-radius: 8px;
+    
+
+  }
+  
+  .project-details div {
+    margin-bottom: 10px;
+  }

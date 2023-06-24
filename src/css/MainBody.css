@@ -1,0 +1,7 @@
+#mainbody{
+    flex: 1;
+    height: 100%;
+    overflow: auto;
+    padding: 30px;
+}   
+
