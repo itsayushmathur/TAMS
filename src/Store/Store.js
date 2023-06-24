@@ -1,5 +1,4 @@
 import { createStore } from "redux";
-import { combineReducers } from "redux";
-import {UserReducers} from "../Reducer/UserReducer"
+import { TalentReducer } from "../Reducer/TalentReducer";
 
-export const store = createStore(UserReducers);
+export const store = createStore(TalentReducer);

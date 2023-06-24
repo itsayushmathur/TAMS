@@ -8,7 +8,7 @@ function SideNav() {
         Home / Dashboard
       </NavLink>
 
-      <NavLink to="/myProject" className="navlink">
+      <NavLink to="/myProjects" className="navlink">
         My Project
       </NavLink>
     </div>

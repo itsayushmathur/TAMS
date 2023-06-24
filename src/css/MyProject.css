@@ -1,0 +1,22 @@
+.projects-ctn {
+  display: grid;
+  width: 100%;
+  justify-content: center;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  grid-gap: 20px;
+}
+.projects-ctn .project {
+  background-color: #a2d8f6;
+  padding: 10px;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  color: #2570b0;
+  font-size: 0.85rem;
+  transition: 0.3s;
+}
+.projects-ctn .project:hover {
+  /* color: #2570b0;
+  background-color: #a2d8f6; */
+  border: 2px solid #2570b0;
+  scale: 1.05;
+}

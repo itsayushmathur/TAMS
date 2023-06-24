@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import "../../css/ProjectDetails.css";
-import { Button, Grid, Paper, Typography } from "@mui/material";
 import { FaTrash } from "react-icons/fa";
+import { getProjectDetails } from "../../apis/Project";
+import { getAllTalents } from "../../apis/Talent";
 
 function ProjectDetails() {
-  const { pid } = useParams();
+  const { projectId } = useParams();
   const [talentId, setTalentId] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -17,56 +18,52 @@ function ProjectDetails() {
     },
   }); // Initialize as an empty array
   const [allocationList, setAllocationList] = useState([]);
-  const navigate = useNavigate();
 
-  useEffect(() => {
-    fetchData();
-    const dateInput = document.getElementById("myDateInput");
-    const currentDate = new Date().toISOString().split("T")[0];
-    dateInput.setAttribute("min", currentDate);
-  }, []);
-
-  const fetchData = async () => {
+  const setAllTalents = async () => {
     try {
-      // Fetch talent list from API
-      const talentResponse = await fetch("/talent/getAll");
-      if (!talentResponse.ok) {
+      const response = await getAllTalents();
+      if (!response.ok) {
         throw new Error("Failed to fetch talent list from API");
       }
-      const talentData = await talentResponse.json();
+      const talentData = await response.json();
       setTalentList(talentData);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
-      // Fetch project details from API
-      const projectResponse = await fetch(`/project/get/${pid}`);
+  const setProjectDetail = async () => {
+    try {
+      const projectResponse = await getProjectDetails(projectId);
       if (!projectResponse.ok) {
         throw new Error("Failed to fetch project data from API");
       }
       const projectData = await projectResponse.json();
       setProjectDetails(projectData);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
-      const allocationResponse = await fetch(`/project/getAllocation/${pid}`);
+  const setProjectAllocations = async () => {
+    try {
+      const allocationResponse = await fetch(
+        `/project/getAllocation/${projectId}`
+      );
       if (!allocationResponse.ok) {
         throw new Error("Failed to fetch talent list from API");
       }
       const allocationList = await allocationResponse.json();
       setAllocationList(allocationList);
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
     }
   };
 
-  const handleAddEmp = async () => {
+  const addAllocation = async (e) => {
+    e.preventDefault();
     try {
       // Validate input
-      if (
-        talentId.trim() === "" ||
-        startDate.trim() === "" ||
-        endDate.trim() === "" ||
-        allocationPercentage.trim() === ""
-      ) {
-        // Fields are empty, return without adding employee
-        return;
-      }
 
       // Create new allocation object
       const newAllocation = {
@@ -74,7 +71,7 @@ function ProjectDetails() {
         endDate: endDate,
         allocationPercent: allocationPercentage,
         project: {
-          id: pid,
+          id: projectId,
         },
         talent: {
           id: talentId,
@@ -101,17 +98,14 @@ function ProjectDetails() {
       setEndDate("");
       setAllocationPercentage("");
 
-      // Fetch updated employee list
-      fetchData();
+      // Fetch updated allocation list
+      setAllocationList();
     } catch (error) {
       console.error(error);
     }
   };
 
-  const handleEmpDetails = (talentId) => {
-    navigate(`/getTalentDetails/${talentId}`);
-  };
-  const handleDelete = async (id) => {
+  const deleteAllocation = async (id) => {
     try {
       // Delete the allocation from the API
       const response = await fetch(`/allocation/delete/${id}`, {
@@ -123,39 +117,55 @@ function ProjectDetails() {
       }
 
       // Fetch updated allocation list
-      fetchData();
+      setAllocationList();
     } catch (error) {
       console.error(error);
     }
   };
 
+  useEffect(() => {
+    setAllTalents();
+    setProjectDetail();
+    setProjectAllocations();
+    const dateInput = document.getElementById("myDateInput");
+    const currentDate = new Date().toISOString().split("T")[0];
+    dateInput.setAttribute("min", currentDate);
+  }, []);
+
   return (
-    <div className="table-container">
+    <div className="project-details-ctn flex vflex">
       <div className="project-details">
-        <div variant="subtitle1">PID: {projectDetails.projectCode}</div>
-        <div variant="subtitle1">
+        <div className="details-field">PID: {projectDetails.projectCode}</div>
+        <div className="details-field">Name: {projectDetails.projectName}</div>
+        <div className="details-field">
           Project Manager:{" "}
           {projectDetails.projectManager.firstName +
             " " +
             projectDetails.projectManager.lastName}
         </div>
-        <div variant="subtitle1">
+        <div className="details-field">
           Department : {projectDetails.projectManager.department.deptName}{" "}
         </div>
-        <div variant="subtitle1">Name: {projectDetails.projectName}</div>
-        <div variant="subtitle1">Start Date: {projectDetails.startDate}</div>
-        <div variant="subtitle1">End Date: {projectDetails.endDate}</div>
-        <div variant="subtitle1">
+        <div className="details-field">
+          Start Date: {projectDetails.startDate}
+        </div>
+        <div className="details-field">End Date: {projectDetails.endDate}</div>
+        <div className="details-field">
           Allocation %: {projectDetails.allocationCheck}
         </div>
       </div>
 
-      <div className="input-container">
-        <select value={talentId} onChange={(e) => setTalentId(e.target.value)}>
-          <option value="">Select Talent ID</option>
+      <form className="add-allocation-ctn" onSubmit={addAllocation}>
+        <select
+          value={talentId}
+          onChange={(e) => setTalentId(e.target.value)}
+          required
+        >
+          <option value="">Select Talent</option>
           {talentList.map((talent) => (
             <option key={talent.id} value={talent.id}>
-              {talent.empId}
+              {talent.empId} + " - " + {talent.firstName} + " " +{" "}
+              {talent.lastName}
             </option>
           ))}
         </select>
@@ -166,6 +176,7 @@ function ProjectDetails() {
           value={startDate}
           max={projectDetails.endDate}
           onChange={(e) => setStartDate(e.target.value)}
+          required
         />
         <input
           type="date"
@@ -174,65 +185,56 @@ function ProjectDetails() {
           value={endDate}
           max={projectDetails.endDate}
           onChange={(e) => setEndDate(e.target.value)}
+          required
         />
         <input
           type="text"
           placeholder="Allocation Percentage"
           value={allocationPercentage}
           onChange={(e) => setAllocationPercentage(e.target.value)}
+          required
         />
-        <button className="btn" onClick={handleAddEmp}>
+        <button className="btn" type="submit">
           Add
         </button>
-      </div>
+      </form>
       <div>
-        <table className="allotable">
-          <thead>
+        <table className="allocations">
+          <thead className="allocation-table-head">
             <tr>
-              <th>Employee ID</th>
-              <th>Employee Name</th>
+              <th>Talent ID</th>
+              <th>Talent Name</th>
               <th>Designation</th>
               <th>Start Date</th>
               <th>End Date</th>
-              <th>Allocation Percentage</th>
-              <th>Action</th>
+              <th>Allocation %</th>
+              <th></th>
             </tr>
           </thead>
-          <tbody>
-            {allocationList.map((employee) => (
-              <tr key={employee.talent.id}>
-                <td
-                  className="alert"
-                  onClick={() => handleEmpDetails(employee.talent.id)}
-                >
-                  {employee.talent.empId}
-                </td>
-                <td onClick={() => handleEmpDetails(employee.talent.id)}>
-                  {employee.talent.firstName + " " + employee.talent.lastName}
-                </td>
-                <td onClick={() => handleEmpDetails(employee.talent.id)}>
-                  {employee.talent.designation.desgnName}
-                </td>
-                <td onClick={() => handleEmpDetails(employee.talent.id)}>
-                  {employee.startDate}
-                </td>
-                <td onClick={() => handleEmpDetails(employee.talent.id)}>
-                  {employee.endDate}
-                </td>
-                <td onClick={() => handleEmpDetails(employee.talent.id)}>
-                  {employee.allocationPercent}
-                </td>
-                <td>
-                  <div
+          <tbody className="allocation-table-body">
+            {allocationList.map((allocation) => (
+              <Link to={`/talent/${talentId}`}>
+                <tr className="allocation-item" key={allocation.talent.id}>
+                  <td className="alert">{allocation.talent.empId}</td>
+                  <td>
+                    {allocation.talent.firstName +
+                      " " +
+                      allocation.talent.lastName}
+                  </td>
+                  <td>{allocation.talent.designation.desgnName}</td>
+                  <td>{allocation.startDate}</td>
+                  <td>{allocation.endDate}</td>
+                  <td>{allocation.allocationPercent}</td>
+                  <td
                     className="btnicon flex"
                     onClick={() => {
-                      handleDelete(employee.id);
+                      deleteAllocation(allocation.id);
                     }}
                   >
                     <FaTrash />
-                  </div>
-                </td>
-              </tr>
+                  </td>
+                </tr>
+              </Link>
             ))}
           </tbody>
         </table>
